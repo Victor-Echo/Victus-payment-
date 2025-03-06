@@ -1,0 +1,263 @@
+import React, { useState } from 'react';
+import { Camera, Home, Clock, User, CreditCard } from 'lucide-react';
+
+const VictusPaymentApp = () => {
+  const [currentScreen, setCurrentScreen] = useState('home');
+  
+  const renderScreen = () => {
+    switch(currentScreen) {
+      case 'home':
+        return <HomeScreen />;
+      case 'scan':
+        return <ScanScreen />;
+      case 'history':
+        return <HistoryScreen />;
+      case 'profile':
+        return <ProfileScreen />;
+      default:
+        return <HomeScreen />;
+    }
+  };
+  
+  return (
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* Header */}
+      <div className="bg-blue-600 p-4 text-white">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold">Victus Pay</h1>
+          <div className="flex items-center space-x-2">
+            <div className="bg-blue-500 p-2 rounded-full">
+              <CreditCard size={20} />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto">
+        {renderScreen()}
+      </div>
+      
+      {/* Navigation Bar */}
+      <div className="bg-white border-t border-gray-200">
+        <div className="flex justify-around">
+          <NavButton 
+            icon={<Home />} 
+            label="Home" 
+            active={currentScreen === 'home'}
+            onClick={() => setCurrentScreen('home')}
+          />
+          <NavButton 
+            icon={<Camera />} 
+            label="Scan" 
+            active={currentScreen === 'scan'}
+            onClick={() => setCurrentScreen('scan')}
+          />
+          <NavButton 
+            icon={<Clock />} 
+            label="History" 
+            active={currentScreen === 'history'}
+            onClick={() => setCurrentScreen('history')}
+          />
+          <NavButton 
+            icon={<User />} 
+            label="Profile" 
+            active={currentScreen === 'profile'}
+            onClick={() => setCurrentScreen('profile')}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NavButton = ({ icon, label, active, onClick }) => {
+  return (
+    <button 
+      className={`flex flex-col items-center justify-center p-2 w-full ${active ? 'text-blue-600' : 'text-gray-500'}`}
+      onClick={onClick}
+    >
+      <div>{icon}</div>
+      <span className="text-xs mt-1">{label}</span>
+    </button>
+  );
+};
+
+const HomeScreen = () => {
+  return (
+    <div className="p-4">
+      <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+        <h2 className="text-lg font-semibold mb-2">Your Balance</h2>
+        <p className="text-3xl font-bold text-blue-600">UGX 245,000</p>
+        <div className="flex mt-4 space-x-2">
+          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg flex-1 text-center">Send Money</button>
+          <button className="bg-green-600 text-white py-2 px-4 rounded-lg flex-1 text-center">Receive</button>
+        </div>
+      </div>
+      
+      <h3 className="font-medium mb-2">Quick Actions</h3>
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        <QuickAction label="Airtime" />
+        <QuickAction label="Utilities" />
+        <QuickAction label="Internet" />
+        <QuickAction label="TV" />
+        <QuickAction label="Education" />
+        <QuickAction label="More" />
+      </div>
+      
+      <h3 className="font-medium mb-2">Recent Transactions</h3>
+      <div className="bg-white rounded-lg shadow-sm">
+        <Transaction 
+          name="Coffee Shop" 
+          amount="-15,000" 
+          date="Today" 
+          type="debit"
+        />
+        <Transaction 
+          name="John Mukasa" 
+          amount="+50,000" 
+          date="Yesterday" 
+          type="credit"
+        />
+        <Transaction 
+          name="Umeme Ltd" 
+          amount="-35,000" 
+          date="Mar 4" 
+          type="debit"
+        />
+      </div>
+    </div>
+  );
+};
+
+const QuickAction = ({ label }) => {
+  return (
+    <div className="bg-white p-2 rounded-lg shadow-sm flex flex-col items-center justify-center">
+      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mb-1">
+        <div className="w-5 h-5 bg-blue-500 rounded-full"></div>
+      </div>
+      <span className="text-xs">{label}</span>
+    </div>
+  );
+};
+
+const Transaction = ({ name, amount, date, type }) => {
+  return (
+    <div className="p-3 border-b border-gray-100 flex justify-between items-center">
+      <div className="flex items-center">
+        <div className={`w-10 h-10 rounded-full ${type === 'credit' ? 'bg-green-100' : 'bg-red-100'} flex items-center justify-center mr-3`}>
+          {type === 'credit' ? '+' : '-'}
+        </div>
+        <div>
+          <p className="font-medium">{name}</p>
+          <p className="text-xs text-gray-500">{date}</p>
+        </div>
+      </div>
+      <p className={type === 'credit' ? 'text-green-600' : 'text-red-600'}>
+        UGX {amount}
+      </p>
+    </div>
+  );
+};
+
+const ScanScreen = () => {
+  return (
+    <div className="flex flex-col items-center justify-center p-4 h-full">
+      <div className="w-64 h-64 border-2 border-dashed border-blue-500 rounded-lg flex items-center justify-center mb-4">
+        <Camera size={48} className="text-blue-500" />
+      </div>
+      <p className="text-center text-gray-600">Position the QR code within the frame to scan and make a payment</p>
+      <button className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg">Enter Code Manually</button>
+    </div>
+  );
+};
+
+const HistoryScreen = () => {
+  return (
+    <div className="p-4">
+      <h2 className="text-lg font-semibold mb-4">Transaction History</h2>
+      <div className="bg-white rounded-lg shadow-sm mb-4">
+        <div className="p-3 border-b border-gray-200 font-medium flex justify-between">
+          <span>This Week</span>
+          <span className="text-blue-600">Filter</span>
+        </div>
+        <Transaction 
+          name="Coffee Shop" 
+          amount="-15,000" 
+          date="Today, 10:23 AM" 
+          type="debit"
+        />
+        <Transaction 
+          name="John Mukasa" 
+          amount="+50,000" 
+          date="Yesterday, 2:45 PM" 
+          type="credit"
+        />
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-sm">
+        <div className="p-3 border-b border-gray-200 font-medium">Last Week</div>
+        <Transaction 
+          name="Umeme Ltd" 
+          amount="-35,000" 
+          date="Mar 4, 9:15 AM" 
+          type="debit"
+        />
+        <Transaction 
+          name="Market Vendor" 
+          amount="-22,000" 
+          date="Mar 3, 11:30 AM" 
+          type="debit"
+        />
+        <Transaction 
+          name="Sarah Nambi" 
+          amount="+100,000" 
+          date="Mar 1, 4:45 PM" 
+          type="credit"
+        />
+      </div>
+    </div>
+  );
+};
+
+const ProfileScreen = () => {
+  return (
+    <div className="p-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-4 flex items-center">
+        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+          <User size={32} className="text-blue-600" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold">Victus Account</h2>
+          <p className="text-gray-600">+256 762 025 345</p>
+          <p className="text-xs text-blue-600 mt-1">Verified Account</p>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-sm mb-4">
+        <ProfileItem label="Account Settings" />
+        <ProfileItem label="Payment Methods" />
+        <ProfileItem label="Security" />
+        <ProfileItem label="Notifications" />
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-sm">
+        <ProfileItem label="Help & Support" />
+        <ProfileItem label="Terms & Conditions" />
+        <ProfileItem label="Privacy Policy" />
+        <ProfileItem label="Logout" isLogout />
+      </div>
+    </div>
+  );
+};
+
+const ProfileItem = ({ label, isLogout }) => {
+  return (
+    <div className={`p-4 border-b border-gray-100 flex justify-between items-center ${isLogout ? 'text-red-600' : ''}`}>
+      <span>{label}</span>
+      <span>›</span>
+    </div>
+  );
+};
+
+export default VictusPaymentApp;
